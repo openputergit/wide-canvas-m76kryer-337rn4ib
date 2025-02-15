@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SoloFounder.AI - Your AI-Powered Entrepreneurial Companion</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://unpkg.com/marked@4.0.2/marked.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
+        }
+        .chat-container {
+            height: calc(100vh - 200px);
+        }
+        .messages-container {
+            height: calc(100% - 60px);
+        }
+        .message {
+            max-width: 80%;
+            margin-bottom: 1rem;
+        }
+        .user-message {
+            background-color: #e9ecef;
+            margin-left: auto;
+        }
+        .bot-message {
+            background-color: #f8f9fa;
+        }
+        .typing-indicator {
+            display: none;
+        }
+        .typing-indicator.active {
+            display: flex;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen">
+        <!-- Chat Interface -->
+        <div class="max-w-4xl mx-auto p-4">
+            <div class="bg-white rounded-lg shadow-lg chat-container flex flex-col">
+                <!-- Chat Header -->
+                <div class="p-4 border-b flex items-center">
+                    <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white">
+                        <i class="bi bi-robot"></i>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="font-semibold">AI Business Analyzer</h3>
+                        <p class="text-sm text-gray-500">Ask me about your business idea</p>
+                    </div>
+                </div>
+
+                <!-- Chat Messages -->
+                <div class="flex-1 overflow-y-auto p-4 messages-container" id="messagesContainer">
+                    <div class="message bot-message rounded-lg p-3">
+                        Hello! I'm your AI business analyzer. I can help you evaluate your business idea by analyzing its potential risks, pros, and cons. Please share your business idea with me! 🚀
+                    </div>
+                    <div class="typing-indicator message bot-message rounded-lg p-3">
+                        <div class="flex space-x-2">
+                            <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                            <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                            <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Input -->
+                <div class="border-t p-4">
+                    <form id="chatForm" class="flex gap-2">
+                        <textarea
+                            id="userInput"
+                            class="flex-1 border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="Describe your business idea..."
+                            rows="2"
+                        ></textarea>
+                        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                            <i class="bi bi-send"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const businessAnalyzer = {
+            analyze(idea) {
+                // Simple keyword-based analysis
+                const keywords = {
+                    tech: ['software', 'app', 'platform', 'digital', 'online', 'tech', 'ai', 'blockchain'],
+                    service: ['service', 'consulting', 'coaching', 'training'],
+                    product: ['product', 'device', 'hardware', 'manufacture'],
+                    retail: ['shop', 'store', 'retail', 'ecommerce', 'sell'],
+                };
+
+                const analysis = {
+                    category: this.detectCategory(idea, keywords),
+                    risks: this.analyzeRisks(idea, keywords),
+                    pros: this.analyzePros(idea, keywords),
+                    cons: this.analyzeCons(idea, keywords),
+                };
+
+                return this.formatAnalysis(analysis);
+            },
+
+            detectCategory(idea, keywords) {
+                for (const [category, words] of Object.entries(keywords)) {
+                    if (words.some(word => idea.toLowerCase().includes(word))) {
+                        return category;
+                    }
+                }
+                return 'general';
+            },
+
+            analyzeRisks(idea, keywords) {
+                const risks = [];
+                
+                // Market risks
+                risks.push("Market competition and saturation");
+                risks.push("Changing consumer preferences");
+                
+                // Financial risks
+                risks.push("Initial capital requirements");
+                risks.push("Cash flow management");
+                
+                // Operational risks
+                if (keywords.tech.some(word => idea.toLowerCase().includes(word))) {
+                    risks.push("Technical infrastructure failures");
+                    risks.push("Cybersecurity threats");
+                }
+                
+                if (keywords.product.some(word => idea.toLowerCase().includes(word))) {
+                    risks.push("Supply chain disruptions");
+                    risks.push("Quality control issues");
+                }
+
+                return risks;
+            },
+
+            analyzePros(idea, keywords) {
+                const pros = [];
+                
+                // General pros
+                pros.push("Potential for growth and scalability");
+                pros.push("Control over business decisions");
+                
+                // Category-specific pros
+                if (keywords.tech.some(word => idea.toLowerCase().includes(word))) {
+                    pros.push("Lower overhead costs");
+                    pros.push("Global market reach");
+                }
+                
+                if (keywords.service.some(word => idea.toLowerCase().includes(word))) {
+                    pros.push("Lower initial investment");
+                    pros.push("Direct client relationships");
+                }
+
+                return pros;
+            },
+
+            analyzeCons(idea, keywords) {
+                const cons = [];
+                
+                // General cons
+                cons.push("Time-intensive startup phase");
+                cons.push("Financial uncertainty");
+                
+                // Category-specific cons
+                if (keywords.retail.some(word => idea.toLowerCase().includes(word))) {
+                    cons.push("Inventory management challenges");
+                    cons.push("Physical location costs");
+                }
+                
+                if (keywords.tech.some(word => idea.toLowerCase().includes(word))) {
+                    cons.push("Rapid technology changes");
+                    cons.push("High development costs");
+                }
+
+                return cons;
+            },
+
+            formatAnalysis(analysis) {
+                return `
+### Business Analysis Report 📊
+
+#### Category
+Your idea appears to be in the ${analysis.category} sector.
+
+#### Potential Risks ⚠️
+${analysis.risks.map(risk => `- ${risk}`).join('\n')}
+
+#### Pros ✅
+${analysis.pros.map(pro => `- ${pro}`).join('\n')}
+
+#### Cons ❌
+${analysis.cons.map(con => `- ${con}`).join('\n')}
+
+#### Recommendations 💡
+1. Conduct thorough market research
+2. Create a detailed business plan
+3. Start with a minimum viable product (MVP)
+4. Build a network of mentors and advisors
+5. Secure adequate funding before launch
+
+Would you like me to elaborate on any of these points?`;
+            }
+        };
+
+        const chatForm = document.getElementById('chatForm');
+        const userInput = document.getElementById('userInput');
+        const messagesContainer = document.getElementById('messagesContainer');
+        const typingIndicator = document.querySelector('.typing-indicator');
+
+        function addMessage(content, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'} rounded-lg p-3`;
+            messageDiv.innerHTML = isUser ? content : marked.parse(content);
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            typingIndicator.classList.add('active');
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            typingIndicator.classList.remove('active');
+        }
+
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const message = userInput.value.trim();
+            if (!message) return;
+
+            // Add user message
+            addMessage(message, true);
+            userInput.value = '';
+
+            // Show typing indicator
+            showTypingIndicator();
+
+            // Simulate API delay
+            setTimeout(() => {
+                // Hide typing indicator and add bot response
+                hideTypingIndicator();
+                const analysis = businessAnalyzer.analyze(message);
+                addMessage(analysis);
+            }, 1500);
+        });
+
+        // Textarea auto-resize
+        userInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+    </script>
+<script>document.body.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); return }, { passive: false })</script>
+	</body>
+</html>
